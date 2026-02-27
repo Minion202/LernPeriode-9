@@ -17,7 +17,7 @@ Ich baue zusätzliche Funktionen wie Sortieren oder Filtern im Client ein, ohne 
 Ziel des Projekts
 Am Ende soll mein Spiel ein funktionierendes Highscore System haben, das über ein Python Backend mit PostgreSQL läuft und sauber dokumentiert ist.
 
-## 24.10.
+## 20.10.
 
 - [x] Skizzen zum Backend und zur Datenbank machen. Ich zeige, wann Godot Daten an das Python Backend schickt und was lokal im Client passiert, zum Beispiel Sortieren oder Suchen der Scores.sondern sich im *client* bearbeiten lassen (sortieren, suchen etc.)
 - [x] PostgreSQL mit Docker einrichten und eine einfache Tabelle für Highscores erstellen. Verbindung testen.
@@ -25,12 +25,19 @@ Am Ende soll mein Spiel ein funktionierendes Highscore System haben, das über e
 
 Heute habe ich PostgreSQL mit Docker gestartet und ein erstes Python Backend mit FastAPI erstellt. Danach habe ich einen Endpoint programmiert, der Hello World zurückgibt und überprüft, ob die Verbindung zur Datenbank funktioniert. So weiss ich, dass mein Spiel später korrekt mit dem Backend kommunizieren kann. Ich habe PostgreSQL gewählt, weil es in vielen echten Projekten genutzt wird, stabil ist und sich sehr gut für strukturierte Daten wie Highscores eignet. Den Code und meine Skizzen habe ich auf GitHub hochgeladen.
 
-## 31.10.
+## 27.02.
 
-- [ ] API Endpoints für Highscores erstellen (Score speichern und Top Scores abrufen).
-- [ ] Verbindung von Godot zum Backend testen und erste Scores in die Datenbank schreiben.
-- [ ] Highscores im Client anzeigen und lokal sortieren oder filtern.
-- [ ] Code dokumentieren und auf GitHub aktualisieren.
+- [x] API Endpoints für Highscores erstellen (Score speichern und Top Scores abrufen).
+- [x] Verbindung von Godot zum Backend testen und erste Scores in die Datenbank schreiben.
+- [x] Highscores im Client anzeigen und lokal sortieren oder filtern.
+- [x] Code dokumentieren und auf GitHub aktualisieren.
 
-✍️ Heute habe ich... (50-100 Wörter)
+Heute habe ich begonnen, mein Highscore System im Spiel fertig umzusetzen. Ich habe das Game Over UI geplant und vorbereitet, damit der Spieler seinen Namen eingeben kann. Danach habe ich getestet, ob die Coins korrekt an mein Python Backend gesendet werden. Ziel ist, dass die Daten sauber in PostgreSQL gespeichert werden. Anschliessend möchte ich die Highscores im Spiel anzeigen lassen. Den aktuellen Stand habe ich auf GitHub hochgeladen.
+
+## 04.03.
+
+- [ ] UI für Game Over fertig bauen. Panel mit NameInput und SaveButton korrekt positionieren und sichtbar machen. Testen, ob der Name richtig ausgelesen wird.
+- [ ] Coins korrekt an Backend senden. Beim Game Over soll der aktuelle Coin Stand zusammen mit dem eingegebenen Namen an die API geschickt werden.
+- [ ] Leaderboard Scene erstellen. Highscores vom Backend abrufen und im Spiel als Liste anzeigen.
+- [ ] Testen und Fehler beheben. Mehrere Scores speichern, prüfen ob Sortierung stimmt, Code auf GitHub aktualisiere
 
