@@ -34,10 +34,23 @@ Heute habe ich PostgreSQL mit Docker gestartet und ein erstes Python Backend mit
 
 Heute habe ich begonnen, mein Highscore System im Spiel fertig umzusetzen. Ich habe das Game Over UI geplant und vorbereitet, damit der Spieler seinen Namen eingeben kann. Danach habe ich getestet, ob die Coins korrekt an mein Python Backend gesendet werden. Ziel ist, dass die Daten sauber in PostgreSQL gespeichert werden. Anschliessend möchte ich die Highscores im Spiel anzeigen lassen. Den aktuellen Stand habe ich auf GitHub hochgeladen.
 
-## 04.03.
+## 06.03.
 
-- [ ] UI für Game Over fertig bauen. Panel mit NameInput und SaveButton korrekt positionieren und sichtbar machen. Testen, ob der Name richtig ausgelesen wird.
-- [ ] Coins korrekt an Backend senden. Beim Game Over soll der aktuelle Coin Stand zusammen mit dem eingegebenen Namen an die API geschickt werden.
-- [ ] Leaderboard Scene erstellen. Highscores vom Backend abrufen und im Spiel als Liste anzeigen.
-- [ ] Testen und Fehler beheben. Mehrere Scores speichern, prüfen ob Sortierung stimmt, Code auf GitHub aktualisiere
+- [x] UI für Game Over fertig bauen. Panel mit NameInput und SaveButton korrekt positionieren und sichtbar machen. Testen, ob der Name richtig ausgelesen wird.
+- [x] Coins korrekt an Backend senden. Beim Game Over soll der aktuelle Coin Stand zusammen mit dem eingegebenen Namen an die API geschickt werden.
+- [x] Leaderboard Scene erstellen. Highscores vom Backend abrufen und im Spiel als Liste anzeigen.
+- [x] Testen und Fehler beheben. Mehrere Scores speichern, prüfen ob Sortierung stimmt, Code auf GitHub aktualisiere
+
+
+Heute habe ich mein Highscore System fertig umgesetzt. Ich habe eine Namenseingabe im Spiel eingebaut, damit der Spieler seinen Score speichern kann. Danach habe ich getestet, ob Godot den Score an mein Python Backend sendet und ob dieser in der PostgreSQL Datenbank gespeichert wird. Anschliessend habe ich geprüft, ob die Highscores wieder korrekt geladen werden.
+
+
+## 03.03
+
+- [ ] Backend Code aufräumen und prüfen, ob die Endpoints /score und /leaderboard korrekt funktionieren.
+- [ ] Datenbank testen und schauen, ob alle Scores richtig in PostgreSQL gespeichert werden.
+- [ ] Mehrere API Tests machen (z.B. mit curl oder aus Godot), um zu prüfen, ob das Backend stabil läuft.
+- [ ] Kurz dokumentieren, wie Backend, Datenbank und Godot zusammenarbeiten.
+
+✍️ Heute habe ich...
 
