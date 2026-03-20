@@ -45,12 +45,21 @@ Heute habe ich begonnen, mein Highscore System im Spiel fertig umzusetzen. Ich h
 Heute habe ich mein Highscore System fertig umgesetzt. Ich habe eine Namenseingabe im Spiel eingebaut, damit der Spieler seinen Score speichern kann. Danach habe ich getestet, ob Godot den Score an mein Python Backend sendet und ob dieser in der PostgreSQL Datenbank gespeichert wird. Anschliessend habe ich geprüft, ob die Highscores wieder korrekt geladen werden.
 
 
-## 03.03
+## 20.03
 
-- [ ] Backend Code aufräumen und prüfen, ob die Endpoints /score und /leaderboard korrekt funktionieren.
-- [ ] Datenbank testen und schauen, ob alle Scores richtig in PostgreSQL gespeichert werden.
-- [ ] Mehrere API Tests machen (z.B. mit curl oder aus Godot), um zu prüfen, ob das Backend stabil läuft.
-- [ ] Kurz dokumentieren, wie Backend, Datenbank und Godot zusammenarbeiten.
+- [x] Backend Code aufräumen und prüfen, ob die Endpoints /score und /leaderboard korrekt funktionieren.
+- [x] Datenbank testen und schauen, ob alle Scores richtig in PostgreSQL gespeichert werden.
+- [x] Mehrere API Tests machen (z.B. mit curl oder aus Godot), um zu prüfen, ob das Backend stabil läuft.
+- [x] Kurz dokumentieren, wie Backend, Datenbank und Godot zusammenarbeiten.
 
-✍️ Heute habe ich...
+Heute habe ich mein Backend und das Highscore System komplett fertig umgesetzt. Ich habe es geschafft, mein Godot Spiel mit meinem Python Backend zu verbinden und die Daten in einer PostgreSQL Datenbank zu speichern. Die Münzen werden jetzt korrekt gezählt und beim Spielende kann der Spieler seinen Namen eingeben und den Score speichern. Danach werden die Highscores wieder vom Backend geladen und im Spiel angezeigt. Am Ende habe ich alles getestet und bin jetzt fertig mit diesem Teil meines Projekts.
+
+
+## 27.03
+
+- [ ] Tutorial Struktur planen (Einleitung, Setup, Backend, Datenbank, Verbindung zu Godot).
+- [ ] Schritt für Schritt Anleitung schreiben, wie man das Backend mit FastAPI erstellt.
+- [ ] Erklären, wie PostgreSQL eingebunden wird und wie Daten gespeichert werden.
+- [ ] Verbindung zwischen Godot und Backend im Tutorial beschreiben und testen.
+
 
