@@ -18,10 +18,10 @@ def ensure_table():
     cur = conn.cursor()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS scores (
-          id SERIAL PRIMARY KEY,
-          player VARCHAR(64) NOT NULL,
-          score INT NOT NULL,
-          created_at TIMESTAMPTZ DEFAULT NOW()
+            id SERIAL PRIMARY KEY,
+            player VARCHAR(64) NOT NULL,
+            score INT NOT NULL,
+            created_at TIMESTAMPTZ DEFAULT NOW()
         );
     """)
     conn.commit()
@@ -32,13 +32,23 @@ class ScoreIn(BaseModel):
     player: str
     score: int
 
+@app.get("/")
+def root():
+    return {"message": "backend läuft"}
+
 @app.get("/hello")
 def hello():
     conn = get_conn()
     cur = conn.cursor()
     cur.execute("SELECT 1;")
     cur.fetchone()
-    cur.close() 
+    cur.close()
+    conn.close()
+    return {"message": "hello world", "db_connected": True}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.post("/score")
 def save_score(payload: ScoreIn):
@@ -52,7 +62,7 @@ def save_score(payload: ScoreIn):
     conn.commit()
     cur.close()
     conn.close()
-    return {"saved": True}
+    return {"saved": True, "player": payload.player, "score": payload.score}
 
 @app.get("/leaderboard")
 def leaderboard():
@@ -60,12 +70,20 @@ def leaderboard():
     conn = get_conn()
     cur = conn.cursor()
     cur.execute("""
-        SELECT player, score
+        SELECT player, score, created_at
         FROM scores
-        ORDER BY score DESC
+        ORDER BY score DESC, created_at ASC
         LIMIT 10;
     """)
     rows = cur.fetchall()
     cur.close()
     conn.close()
-    return [{"player": r[0], "score": r[1]} for r in rows]
+
+    return [
+        {
+            "player": row[0],
+            "score": row[1],
+            "created_at": row[2].isoformat()
+        }
+        for row in rows
+    ]
