@@ -57,9 +57,9 @@ Heute habe ich mein Backend und das Highscore System komplett fertig umgesetzt. 
 
 ## 27.03
 
-- [ ] Tutorial Struktur planen (Einleitung, Setup, Backend, Datenbank, Verbindung zu Godot).
-- [ ] Schritt für Schritt Anleitung schreiben, wie man das Backend mit FastAPI erstellt.
-- [ ] Erklären, wie PostgreSQL eingebunden wird und wie Daten gespeichert werden.
-- [ ] Verbindung zwischen Godot und Backend im Tutorial beschreiben und testen.
+- [x] Tutorial Struktur planen (Einleitung, Setup, Backend, Datenbank, Verbindung zu Godot).
+- [x] Schritt für Schritt Anleitung schreiben, wie man das Backend mit FastAPI erstellt.
+- [x] Erklären, wie PostgreSQL eingebunden wird und wie Daten gespeichert werden.
+- [x] Verbindung zwischen Godot und Backend im Tutorial beschreiben und testen.
 
 
