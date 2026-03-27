@@ -4,73 +4,58 @@ title: Creating a Backend for a Godot Highscore System
 
 # Goal
 
-In this tutorial, you will learn how to create a simple backend for a Godot game by using Python, FastAPI, and PostgreSQL. The backend will receive a player's name and score, save this data in a database, and return a leaderboard with the best results.
+In this tutorial, you will create a simple backend for a Godot game using Python, FastAPI, and PostgreSQL. The backend will save player names and scores and return a leaderboard.
 
-This is useful because the game does not only store the data locally, but saves it in a real database. At the end of this tutorial, you will have a working backend that communicates with your Godot project and makes it possible to save and load highscores.
+This makes the game more realistic because the data is stored in a real database instead of only locally.
 
 # Previous Knowledge
 
-Before starting this tutorial, you should already know some basic Python syntax and have a rough understanding of how a Godot project is structured. It is also helpful if you know how to use the terminal to open folders and run commands.
+You should know basic Python and have a rough idea of how Godot works. It also helps if you know how to use the terminal.
 
-You do not need to be an expert in backend development, but you should understand what files, folders, and scripts are. A basic idea of what an API does is also helpful.
+You do not need deep backend knowledge, but you should understand files, folders, and basic concepts like APIs.
 
 # What you'll learn
 
-In this tutorial, you will learn:
-
-- how to create a backend with FastAPI
-- how to connect Python to a PostgreSQL database
-- how to create a table for player names and scores
-- how to save new scores through an API route
-- how to return the best scores with a leaderboard route
-- how to test the backend locally
-- how to connect the backend to Godot
+- how to create a backend with FastAPI  
+- how to connect Python to PostgreSQL  
+- how to store player names and scores  
+- how to create routes like /score and /leaderboard  
+- how to test the backend  
+- how to connect it to Godot  
 
 # Tutorial
 
 ## 1. Create the backend folder
 
-First, create a new folder for your backend project. This folder will contain your Python files and the code for the API.
-
-A possible project structure could look like this:
+Create a folder like this:
 
 game-backend-project/  
 └── backend/  
   ├── main.py  
   └── requirements.txt  
 
-The file `main.py` will contain the backend code. The file `requirements.txt` will contain the Python libraries needed for the project.
+## 2. Install libraries
 
-## 2. Install the required libraries
-
-Now create a file called `requirements.txt` and add the following libraries:
+Add this to requirements.txt:
 
 fastapi  
 uvicorn[standard]  
 psycopg2-binary  
 pydantic  
 
-These libraries are used for different tasks. FastAPI is used to create the API, Uvicorn is used to run the backend server, psycopg2-binary is used to connect Python to PostgreSQL, and Pydantic is used to validate incoming JSON data.
-
-After creating the file, install everything with this command in the terminal:
+Install them:
 
 pip install -r requirements.txt
 
 ## 3. Set up PostgreSQL
 
-The next step is to make sure PostgreSQL is running. In this project, PostgreSQL is used to store the highscores permanently.
+Make sure PostgreSQL is running.
 
-The database should later contain a table called `scores`. This table stores an id, the player name, the score, and the creation date.
+The backend will create a table called `scores` with player name and score. PostgreSQL is used because it is reliable and structured.
 
-PostgreSQL was chosen because it is structured, reliable, and often used in real projects. It works very well for storing data such as names, scores, rankings, and timestamps.
+## 4. Backend code
 
-## 4. Write the backend code
-
-Now open `main.py` and add the backend code.
-
-This backend creates a connection to PostgreSQL, makes sure that the scores table exists, saves new scores, and returns the top scores in the leaderboard.
-
-Add this code to `main.py`:
+Add this to main.py:
 
 from fastapi import FastAPI  
 from pydantic import BaseModel  
@@ -93,9 +78,8 @@ def ensure_table():
  cur.execute("""  
   CREATE TABLE IF NOT EXISTS scores (  
    id SERIAL PRIMARY KEY,  
-   player VARCHAR(64) NOT NULL,  
-   score INT NOT NULL,  
-   created_at TIMESTAMPTZ DEFAULT NOW()  
+   player VARCHAR(64),  
+   score INT  
   );  
  """)  
  conn.commit()  
@@ -106,152 +90,59 @@ class ScoreIn(BaseModel):
  player: str  
  score: int  
 
-@app.get("/")  
-def root():  
- return {"message": "backend is running"}  
-
-@app.get("/hello")  
-def hello():  
- conn = get_conn()  
- cur = conn.cursor()  
- cur.execute("SELECT 1;")  
- cur.fetchone()  
- cur.close()  
- conn.close()  
- return {"message": "hello world", "db_connected": True}  
-
 @app.post("/score")  
 def save_score(payload: ScoreIn):  
  ensure_table()  
  conn = get_conn()  
  cur = conn.cursor()  
- cur.execute(  
-  "INSERT INTO scores (player, score) VALUES (%s, %s);",  
-  (payload.player, payload.score),  
- )  
+ cur.execute("INSERT INTO scores (player, score) VALUES (%s, %s);", (payload.player, payload.score))  
  conn.commit()  
  cur.close()  
  conn.close()  
- return {"saved": True, "player": payload.player, "score": payload.score}  
+ return {"saved": True}  
 
 @app.get("/leaderboard")  
 def leaderboard():  
  ensure_table()  
  conn = get_conn()  
  cur = conn.cursor()  
- cur.execute("""  
-  SELECT player, score, created_at  
-  FROM scores  
-  ORDER BY score DESC, created_at ASC  
-  LIMIT 10;  
- """)  
+ cur.execute("SELECT player, score FROM scores ORDER BY score DESC LIMIT 10;")  
  rows = cur.fetchall()  
  cur.close()  
  conn.close()  
+ return [{"player": r[0], "score": r[1]} for r in rows]  
 
- return [  
-  {  
-   "player": row[0],  
-   "score": row[1],  
-   "created_at": row[2].isoformat()  
-  }  
-  for row in rows  
- ]  
+## 5. Start backend
 
-## 5. Understand the backend code
-
-The function `get_conn()` creates the connection to PostgreSQL. Without this function, Python would not be able to communicate with the database.
-
-The function `ensure_table()` checks if the table `scores` already exists. If it does not exist, it creates it automatically.
-
-The class `ScoreIn` defines the JSON format that the backend expects when a score is sent. It contains two values: `player` and `score`.
-
-The route `/` shows whether the backend is running.
-
-The route `/hello` is useful for testing because it checks whether the backend can connect to the database.
-
-The route `/score` is used to save a new score in PostgreSQL.
-
-The route `/leaderboard` returns the best 10 scores from the database in sorted order.
-
-## 6. Start the backend
-
-Once the code is finished, you can start the backend with the following command:
+Run:
 
 uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 
-If everything works, you should see something like this in the terminal:
+## 6. Test
 
-Uvicorn running on http://127.0.0.1:8000
-
-This means that the backend is active and ready to receive requests.
-
-## 7. Test the backend
-
-Now the backend should be tested before connecting it to Godot.
-
-### Test the root route
-
-Open this in your browser:
-
-http://127.0.0.1:8000/
-
-You should see a message that the backend is running.
-
-### Test the database connection
-
-Open this in your browser:
-
-http://127.0.0.1:8000/hello
-
-You should get a message such as:
-
-{"message":"hello world","db_connected":true}
-
-This shows that the backend can connect to the database correctly.
-
-### Test saving a score
-
-In the terminal, use this command:
+Save score:
 
 curl -X POST http://127.0.0.1:8000/score -H "Content-Type: application/json" -d '{"player":"Mina","score":15}'
 
-If the request is successful, the backend should return a response confirming that the score has been saved.
-
-### Test the leaderboard
-
-Then test the leaderboard route with this command:
+Get leaderboard:
 
 curl http://127.0.0.1:8000/leaderboard
 
-You should get a JSON list with the stored highscores.
+## 7. Connect to Godot
 
-## 8. Connect the backend to Godot
+Use an HTTPRequest node.
 
-After the backend works on its own, it can be connected to Godot.
-
-In Godot, an `HTTPRequest` node can be used to send requests to the backend. When the game ends, the player can enter a name and the game sends the player name and score to the `/score` route.
-
-Then the game can send another request to `/leaderboard` and show the best results in the user interface.
-
-This means the game no longer only stores data locally, but communicates with a real backend and database.
+Send score to /score and fetch /leaderboard to display results in the game.
 
 # Result
 
-At the end of this tutorial, you have a working backend for a Godot highscore system. The backend can receive player names and scores, save them in PostgreSQL, and return a sorted leaderboard.
-
-This means that your game can now communicate with a real backend instead of only saving data locally.
+You now have a working backend that saves scores in PostgreSQL and returns a leaderboard.
 
 # What could go wrong?
 
-There are several common problems when building this backend.
-
-One possible problem is that PostgreSQL is not running. In that case, the backend cannot connect to the database, and routes such as `/hello` or `/score` will fail.
-
-Another possible problem is that the wrong route is called. For example, if `/score` is opened directly in the browser, it may not work because `/score` expects a `POST` request with JSON data, not a normal `GET` request.
-
-A third problem is that the JSON data sent from Godot is incorrect. If the fields do not match the expected structure, FastAPI will reject the request.
-
-It is also possible that the Godot UI is connected incorrectly. For example, if a button signal is missing, the score may never be sent to the backend even though the backend itself works.
-
-Finally, small mistakes in the database configuration, such as the wrong user name, password, port, or database name, can stop the backend from working. For this reason, it is important to test every step separately.
+Database not running  
+Wrong login data  
+Wrong route used  
+JSON format incorrect  
+Godot button not connected  
+Backend not started  
