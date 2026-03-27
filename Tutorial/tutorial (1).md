@@ -6,13 +6,13 @@ title: Creating a Backend for a Godot Highscore System
 
 In this tutorial, you will learn how to create a simple backend for a Godot game by using Python, FastAPI, and PostgreSQL. The backend will receive a player's name and score, save this data in a database, and return a leaderboard with the best results.
 
-This is useful because the game does not only store the data locally, but saves it in a real database. As a result, the highscore system becomes more realistic and works more like in an actual game project. At the end of this tutorial, you will have a working backend that communicates with your Godot project and makes it possible to save and load highscores.
+This is useful because the game does not only store the data locally, but saves it in a real database. At the end of this tutorial, you will have a working backend that communicates with your Godot project and makes it possible to save and load highscores.
 
 # Previous Knowledge
 
-Before starting this tutorial, you should already know some basic Python syntax and have a rough understanding of how a Godot project is structured. It is also helpful if you already know how to use the terminal to open folders and run commands.
+Before starting this tutorial, you should already know some basic Python syntax and have a rough understanding of how a Godot project is structured. It is also helpful if you know how to use the terminal to open folders and run commands.
 
-You do not need to be an expert in backend development, but you should understand what files, folders, and scripts are. It is also useful if you already know that an API is a way for different programs to communicate with each other. In this project, Godot communicates with the backend through API routes.
+You do not need to be an expert in backend development, but you should understand what files, folders, and scripts are. A basic idea of what an API does is also helpful.
 
 # What you'll learn
 
@@ -39,10 +39,7 @@ game-backend-project/
   ├── main.py  
   └── requirements.txt  
 
-The file `main.py` will contain the backend code.  
-The file `requirements.txt` will contain the Python libraries needed for the project.
-
-It is useful to keep the backend in its own folder because this makes the project easier to organise and understand.
+The file `main.py` will contain the backend code. The file `requirements.txt` will contain the Python libraries needed for the project.
 
 ## 2. Install the required libraries
 
@@ -53,50 +50,25 @@ uvicorn[standard]
 psycopg2-binary  
 pydantic  
 
-These libraries are used for different tasks.
-
-- FastAPI is used to create the API
-- Uvicorn is used to run the backend server
-- psycopg2-binary is used to connect Python to PostgreSQL
-- Pydantic is used to validate incoming JSON data
+These libraries are used for different tasks. FastAPI is used to create the API, Uvicorn is used to run the backend server, psycopg2-binary is used to connect Python to PostgreSQL, and Pydantic is used to validate incoming JSON data.
 
 After creating the file, install everything with this command in the terminal:
 
 pip install -r requirements.txt
 
-This step is important because the backend cannot run if the required libraries are missing.
-
 ## 3. Set up PostgreSQL
 
 The next step is to make sure PostgreSQL is running. In this project, PostgreSQL is used to store the highscores permanently.
 
-The database should later contain a table called `scores`. This table stores:
+The database should later contain a table called `scores`. This table stores an id, the player name, the score, and the creation date.
 
-- an id
-- the player name
-- the score
-- the creation date
-
-PostgreSQL was chosen because it is structured, reliable, and often used in real projects. It works very well for storing data such as names, scores, rankings, and timestamps. In comparison to storing data only inside the game, a database is more realistic and easier to expand later.
-
-For example, in a bigger project you could later add more features such as:
-
-- different levels
-- timestamps
-- player ids
-- login data
-- several game modes
+PostgreSQL was chosen because it is structured, reliable, and often used in real projects. It works very well for storing data such as names, scores, rankings, and timestamps.
 
 ## 4. Write the backend code
 
 Now open `main.py` and add the backend code.
 
-This backend does four important things:
-
-- it creates a connection to PostgreSQL
-- it makes sure that the scores table exists
-- it saves new scores
-- it returns the top scores in the leaderboard
+This backend creates a connection to PostgreSQL, makes sure that the scores table exists, saves new scores, and returns the top scores in the leaderboard.
 
 Add this code to `main.py`:
 
@@ -188,26 +160,19 @@ def leaderboard():
 
 ## 5. Understand the backend code
 
-It is important to understand what the code does.
-
 The function `get_conn()` creates the connection to PostgreSQL. Without this function, Python would not be able to communicate with the database.
 
-The function `ensure_table()` checks if the table `scores` already exists. If it does not exist yet, it creates it automatically. This is practical because you do not have to create the table manually every time.
+The function `ensure_table()` checks if the table `scores` already exists. If it does not exist, it creates it automatically.
 
-The class `ScoreIn` defines the JSON format that the backend expects when a score is sent. It contains two values:
+The class `ScoreIn` defines the JSON format that the backend expects when a score is sent. It contains two values: `player` and `score`.
 
-- `player`
-- `score`
-
-The route `/` is a simple route that shows whether the backend is running.
+The route `/` shows whether the backend is running.
 
 The route `/hello` is useful for testing because it checks whether the backend can connect to the database.
 
 The route `/score` is used to save a new score in PostgreSQL.
 
 The route `/leaderboard` returns the best 10 scores from the database in sorted order.
-
-This means that the backend is already able to do the most important parts of a highscore system.
 
 ## 6. Start the backend
 
@@ -220,8 +185,6 @@ If everything works, you should see something like this in the terminal:
 Uvicorn running on http://127.0.0.1:8000
 
 This means that the backend is active and ready to receive requests.
-
-The option `--reload` is useful because the backend restarts automatically whenever you save changes in the file.
 
 ## 7. Test the backend
 
@@ -263,52 +226,21 @@ curl http://127.0.0.1:8000/leaderboard
 
 You should get a JSON list with the stored highscores.
 
-This step is important because it proves that the backend can both save and return data correctly.
-
 ## 8. Connect the backend to Godot
 
 After the backend works on its own, it can be connected to Godot.
 
-In Godot, an `HTTPRequest` node can be used to send requests to the backend. This means that the game can communicate with the backend whenever it needs to save or load data.
-
-For example, when the game ends, the player can enter a name. After that, Godot sends the player name and score to the `/score` route.
+In Godot, an `HTTPRequest` node can be used to send requests to the backend. When the game ends, the player can enter a name and the game sends the player name and score to the `/score` route.
 
 Then the game can send another request to `/leaderboard` and show the best results in the user interface.
 
-This is the connection between the game and the backend:
-
-- Godot sends data to the backend
-- the backend saves the data in PostgreSQL
-- the backend returns the leaderboard
-- Godot displays the leaderboard in the game
-
-As a result, the game now uses a real backend instead of only local variables.
-
-## 9. Why this backend is useful
-
-This backend is a good introduction to backend development because it combines several important technologies:
-
-- FastAPI for creating the API
-- PostgreSQL for storing structured data
-- JSON for data exchange
-- Godot as the frontend or game client
-
-It is also practical because the project can be extended later. For example, you could later add:
-
-- more detailed player profiles
-- several leaderboards
-- filtering by level
-- deleting scores
-- authentication
-- online multiplayer features
-
-This shows that even a simple backend can become the basis for a larger project.
+This means the game no longer only stores data locally, but communicates with a real backend and database.
 
 # Result
 
 At the end of this tutorial, you have a working backend for a Godot highscore system. The backend can receive player names and scores, save them in PostgreSQL, and return a sorted leaderboard.
 
-This means that your game can now communicate with a real backend instead of only saving data locally. As a result, the project is more realistic and closer to how games and web applications work in practice.
+This means that your game can now communicate with a real backend instead of only saving data locally.
 
 # What could go wrong?
 
@@ -322,4 +254,4 @@ A third problem is that the JSON data sent from Godot is incorrect. If the field
 
 It is also possible that the Godot UI is connected incorrectly. For example, if a button signal is missing, the score may never be sent to the backend even though the backend itself works.
 
-Finally, small mistakes in the database configuration, such as the wrong user name, password, port, or database name, can stop the backend from working. For this reason, it is important to test every step separately and not only at the very end.
+Finally, small mistakes in the database configuration, such as the wrong user name, password, port, or database name, can stop the backend from working. For this reason, it is important to test every step separately.
